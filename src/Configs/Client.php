@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Beyondh\Config;
+namespace Beyondh\Configs;
 
 use Beyondh\Kernel\BasicClient;
 use GuzzleHttp\Exception\GuzzleException;

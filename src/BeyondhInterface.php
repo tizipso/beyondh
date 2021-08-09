@@ -15,7 +15,7 @@ use Pimple\Container;
  * @property Member\Client      $member
  * @property Customer\Client    $customer
  * @property CashingBill\Client $cashing
- * @property Config\Client      $config
+ * @property Configs\Client     $config
  * @property Message\Client     $message
  * @property Security\Client    $security
  * @property Price\Client       $price
@@ -34,7 +34,7 @@ class BeyondhInterface extends Container
         Member\ServiceProvider::class,
         Customer\ServiceProvider::class,
         CashingBill\ServiceProvider::class,
-        Config\ServiceProvider::class,
+        Configs\ServiceProvider::class,
         Message\ServiceProvider::class,
         Security\ServiceProvider::class,
         Price\ServiceProvider::class,
@@ -45,13 +45,14 @@ class BeyondhInterface extends Container
     ];
 
     /**
-     * Application constructor.
+     * BeyondhInterface constructor.
      */
     public function __construct(array $config = [], array $values = [])
     {
         parent::__construct($values);
 
         $this['config'] = function () use ($config) {
+            $config = array_merge(config('beyondh', []), $config);
             return new Collection($config);
         };
 

@@ -8,10 +8,13 @@ use Carbon\Carbon;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use Beyondh\BeyondhInterface;
-use GuzzleHttp\Psr7\Stream;
 use Hyperf\Guzzle\PoolHandler;
+use Hyperf\HttpMessage\Stream\SwooleStream;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class Client
 {
@@ -64,6 +67,7 @@ class Client
             $this->stack = HandlerStack::create($handler);
 
             $this->withBodyRefactorMiddleware();
+            $this->withLoggerMiddleware();
         }
 
         $client = make(HttpClient::class, [
@@ -105,11 +109,7 @@ class Client
                         $content['content'] = ! empty($content['content']) ? $content['content'] : (object) $content['content'];
                         $params = $this->doHandlerBody($content);
 
-                        $stream = fopen('php://memory', 'r+');
-                        fwrite($stream, json_encode($params));
-                        rewind($stream);
-
-                        $request = $request->withBody(new Stream($stream));
+                        $request = $request->withBody(new SwooleStream(json_encode($params)));
                     }
                 }
 
@@ -118,6 +118,33 @@ class Client
         };
 
         $this->stack->push($middleware, 'body_refactor');
+    }
+
+    private function withLoggerMiddleware()
+    {
+        $middleware = function (callable $handler) {
+            return function (RequestInterface $request, array $options) use ($handler) {
+                $promise = $handler($request, $options);
+                return $promise->then(
+                    function (ResponseInterface $response) use ($request) {
+                        if ($this->app['config']->get('logger')) {
+                            $body = $response->getBody()->getContents();
+
+                            $logger = ApplicationContext::getContainer()->get(LoggerFactory::class)->get('log', 'beyondh');
+
+                            $logger->info(sprintf('%s %s', 'REQUEST', $request->getBody()->getContents()));
+                            $logger->info(sprintf('%s %s', 'RESPONSE', $body));
+
+                            return $response->withBody(new SwooleStream($body));
+                        } else {
+                            return $response;
+                        }
+                    }
+                );
+            };
+        };
+
+        $this->stack->push($middleware, 'logger');
     }
 
     /**
@@ -170,7 +197,8 @@ class Client
 
         $str = empty($values) ? '' : implode('&', $values);
 
-        $app_key = $this->app['config']->get('key', '');
+        $app_key = $this->app['config']->get('app_key', '');
+
         if ($app_key) $str .= $app_key;
 
         if (isset($params['sign_type']) && $params['sign_type'] === 'SHA256') {

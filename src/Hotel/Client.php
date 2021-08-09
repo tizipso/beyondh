@@ -113,7 +113,7 @@ class Client extends BasicClient
      *
      * 该接口可按照酒店所在地理位置的经度和维度、距离、酒店服务、酒店名称、所在城市查询酒店的基本信息。
      *
-     * @param int|null    $PageIndex       页码
+     * @param int         $PageIndex       页码
      * @param string|null $OrgName         酒店名称
      * @param string|null $CityId          城市Id
      * @param float|null  $Longitude       经度
@@ -125,7 +125,7 @@ class Client extends BasicClient
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function GetOrgs(int $PageIndex = null, string $OrgName = null, string $CityId = null, float $Longitude = null, float $Latitude = null, int $Distance = null, array $ServiceTags = null, int $PageSize = null, array $OrderByRequests = null): ResponseInterface
+    public function GetOrgs(int $PageIndex = 15, string $OrgName = null, string $CityId = null, float $Longitude = null, float $Latitude = null, int $Distance = null, array $ServiceTags = null, int $PageSize = null, array $OrderByRequests = null): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [

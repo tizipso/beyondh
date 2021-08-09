@@ -20,9 +20,13 @@
     },
     "require": {
         "php": ">=8.0",
+        "ext-json": "*",
+        "hyperf/config": "^2.2",
+        "hyperf/http-server": "^2.2",
+        "hyperf/logger": "^2.2",
         "hyperf/guzzle": "^2.2",
-        "pimple/pimple": "*",
-        "ext-json": "*"
+        "nesbot/carbon": "^2.51",
+        "pimple/pimple": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",

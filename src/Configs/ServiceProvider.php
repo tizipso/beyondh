@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Beyondh\Config;
+namespace Beyondh\Configs;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -18,7 +18,7 @@ class ServiceProvider implements ServiceProviderInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['config'] = function ($app) {
+        $pimple['configs'] = function ($app) {
             return new Client($app);
         };
     }
