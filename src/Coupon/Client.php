@@ -23,7 +23,7 @@ class Client extends BasicClient
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function GetMyCoupons(string $MemberId, string $CouponStatus, string $MobileNo = null, string $UserOtherId = null, string $UserFromType = null, int $PageSize = 1, int $PageIndex = 15): ResponseInterface
+    public function GetMyCoupons(string $MemberId, string $CouponStatus, string $MobileNo = null, string $UserOtherId = null, string $UserFromType = null, int $PageSize = 15, int $PageIndex = 1): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [

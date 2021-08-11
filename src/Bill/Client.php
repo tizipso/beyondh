@@ -170,13 +170,13 @@ class Client extends BasicClient
      *
      * @param float       $OrgId           酒店Id
      * @param string      $OutTradeNO      商户订单号
-     * @param float       $OnlinepaymentId 在线支付Id
+     * @param float       $OnlinePaymentId 在线支付Id
      * @param string      $PayType         支付类型
      * @param string|null $TransactionID   支付订单号
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function SearchPayResult(float $OrgId, string $OutTradeNO, float $OnlinepaymentId, string $PayType, string $TransactionID = null): ResponseInterface
+    public function SearchPayResult(float $OrgId, string $OutTradeNO, float $OnlinePaymentId, string $PayType, string $TransactionID = null): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -185,7 +185,7 @@ class Client extends BasicClient
                     'OrgId' => $OrgId,
                     'OutTradeNO' => $OutTradeNO,
                     'TransactionID' => $TransactionID,
-                    'OnlinepaymentId' => $OnlinepaymentId,
+                    'OnlinepaymentId' => $OnlinePaymentId,
                     'PayType' => $PayType,
                 ],
             ],

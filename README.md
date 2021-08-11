@@ -37,3 +37,26 @@ $beyondh = new BeyondhInterface($config);
 $request = $beyondh->hotel->GetOrgs(PageIndex: 1);
 ```
 
+### 日志打印到文件
+
+> 添加以下代码到 `config/autoload/logger.php` 中
+
+```php
+    'beyondh' => [
+        'handler' => [
+            'class' => Monolog\Handler\StreamHandler::class,
+            'constructor' => [
+                'stream' => BASE_PATH . '/runtime/logs/beyondh.log',
+                'level' => Monolog\Logger::DEBUG,
+            ],
+        ],
+        'formatter' => [
+            'class' => Monolog\Formatter\LineFormatter::class,
+            'constructor' => [
+                'format' => null,
+                'dateFormat' => 'Y-m-d H:i:s',
+                'allowInlineLineBreaks' => true,
+            ],
+        ],
+    ],
+```

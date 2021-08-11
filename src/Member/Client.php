@@ -417,7 +417,7 @@ class Client extends BasicClient
     /**
      * 升级会员等级
      *
-     * @param string      $OrgId       酒店ID
+     * @param float       $OrgId       酒店ID
      * @param string|null $MemberId    会员编号
      * @param string|null $TargetLevel 目标等级
      * @param string|null $UpgradeWay  升级方式
@@ -426,7 +426,7 @@ class Client extends BasicClient
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function UpgradeMemberLevel(string $OrgId, string $MemberId = null, string $TargetLevel = null, string $UpgradeWay = null, string $CreatorName = null, string $Remark = null): ResponseInterface
+    public function UpgradeMemberLevel(float $OrgId, string $MemberId = null, string $TargetLevel = null, string $UpgradeWay = null, string $CreatorName = null, string $Remark = null): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [

@@ -184,12 +184,12 @@ class Client extends BasicClient
      * @param array|null  $OrderStatusIds
      * @param string|null $RoomNumber
      * @param string|null $IsFuzzyName
-     * @param int|null    $PageSize
-     * @param int|null    $PageIndex
+     * @param int         $PageSize
+     * @param int         $PageIndex
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function QueryOrders(float $OrgId, string $MemberId = null, string $OpenId = null, string $Keywords = null, string $Channel = null, bool $IncludeOrgInfo = false, string $BeginTime = null, string $EndTime = null, array $OrderStatusIds = null, string $RoomNumber = null, string $IsFuzzyName = null, int $PageSize = null, int $PageIndex = null): ResponseInterface
+    public function QueryOrders(float $OrgId, string $MemberId = null, string $OpenId = null, string $Keywords = null, string $Channel = null, bool $IncludeOrgInfo = false, string $BeginTime = null, string $EndTime = null, array $OrderStatusIds = null, string $RoomNumber = null, string $IsFuzzyName = null, int $PageSize = 15, int $PageIndex = 1): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -321,12 +321,12 @@ class Client extends BasicClient
      * @param string|null $MemberId      会员Id
      * @param string|null $Mobile        手机号
      * @param string|null $IdCardNumber  证件号
-     * @param int|null    $PageSize      每页条数
-     * @param int|null    $PageIndex     页码
+     * @param int         $PageSize      每页条数
+     * @param int         $PageIndex     页码
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function QueryCheckins(float $OrgId, array $OrderIds = null, array $OccupationIds = null, array $CheckInIds = null, array $RoomNumbers = null, array $CheckinStatus = null, string $MemberId = null, string $Mobile = null, string $IdCardNumber = null, int $PageSize = null, int $PageIndex = null): ResponseInterface
+    public function QueryCheckins(float $OrgId, array $OrderIds = null, array $OccupationIds = null, array $CheckInIds = null, array $RoomNumbers = null, array $CheckinStatus = null, string $MemberId = null, string $Mobile = null, string $IdCardNumber = null, int $PageSize = 15, int $PageIndex = 1): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [

@@ -17,13 +17,13 @@ class Client extends BasicClient
      *
      * @param string      $ArriveTime           预计入住时间
      * @param string      $DepartureTime        预计离店时间
+     * @param array|null  $OrgIds               酒店Ids
      * @param bool        $OnlyOpenedOrg        是否只查询开放接口的酒店信息
      * @param bool        $PhysicalRoomTypeOnly 只查询物理房型
      * @param bool        $BasicInfoOnly        只查询酒店基本信息
      * @param bool        $IncludeDetailCounts  包含每天的房量信息
      * @param bool        $IncludePrices        包含房价信息
      * @param bool        $IncludeRoomCounts    包含房量信息
-     * @param array|null  $OrgIds               酒店Ids
      * @param string|null $OrgName              酒店名称
      * @param array|null  $OrgSns               酒店编号
      * @param string|null $CityId               城市Id
@@ -42,12 +42,12 @@ class Client extends BasicClient
      * @param array|null  $ContractorLevels     协议公司等级
      * @param string|null $SearchType           查询的会员还是协议公司
      * @param array|null  $OrderByRequests      排序参数    排序：目前只支持Star(星级评分),OrgName(酒店名称)排序  {"OrderBy": "Star", "Asc": true}[]  OrderBy[string]=排序字段/Asc[bool]=是否正序
-     * @param int|null    $PageSize             分页大小
-     * @param int|null    $PageIndex            页码
+     * @param int         $PageSize             分页大小
+     * @param int         $PageIndex            页码
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function SearchOrgWithRoomPriceAndRoomCount(string $ArriveTime, string $DepartureTime, bool $OnlyOpenedOrg, bool $PhysicalRoomTypeOnly, bool $BasicInfoOnly, bool $IncludeDetailCounts, bool $IncludePrices, bool $IncludeRoomCounts, array $OrgIds = null, string $OrgName = null, array $OrgSns = null, string $CityId = null, string $DistrictId = null, int $Star = null, string $CommercialLocationId = null, float $Latitude = null, float $Longitude = null, int $Distance = null, array $ServiceTags = null, string $CheckInType = null, array $RoomTypeIds = null, array $RoomStatuses = null, array $MemberLevels = null, string $RateCode = null, array $ContractorLevels = null, string $SearchType = null, array $OrderByRequests = null, int $PageSize = null, int $PageIndex = null): ResponseInterface
+    public function SearchOrgWithRoomPriceAndRoomCount(string $ArriveTime, string $DepartureTime, array $OrgIds = null, bool $OnlyOpenedOrg = true, bool $PhysicalRoomTypeOnly = true, bool $BasicInfoOnly = false, bool $IncludeDetailCounts = false, bool $IncludePrices = false, bool $IncludeRoomCounts = false, string $OrgName = null, array $OrgSns = null, string $CityId = null, string $DistrictId = null, int $Star = null, string $CommercialLocationId = null, float $Latitude = null, float $Longitude = null, int $Distance = null, array $ServiceTags = null, string $CheckInType = null, array $RoomTypeIds = null, array $RoomStatuses = null, array $MemberLevels = null, string $RateCode = null, array $ContractorLevels = null, string $SearchType = null, array $OrderByRequests = null, int $PageSize = 15, int $PageIndex = 1): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -113,19 +113,19 @@ class Client extends BasicClient
      *
      * 该接口可按照酒店所在地理位置的经度和维度、距离、酒店服务、酒店名称、所在城市查询酒店的基本信息。
      *
-     * @param int         $PageIndex       页码
      * @param string|null $OrgName         酒店名称
      * @param string|null $CityId          城市Id
      * @param float|null  $Longitude       经度
      * @param float|null  $Latitude        纬度
      * @param int|null    $Distance        距离
      * @param array|null  $ServiceTags     服务标签
-     * @param int|null    $PageSize        分页大小
+     * @param int         $PageIndex       页码
+     * @param int         $PageSize        分页大小
      * @param array|null  $OrderByRequests 排序：目前只支持Star(星级评分),OrgName(酒店名称)排序  {"OrderBy": "Star", "Asc": true}[]  OrderBy[string]=排序字段/Asc[bool]=是否正序
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function GetOrgs(int $PageIndex = 15, string $OrgName = null, string $CityId = null, float $Longitude = null, float $Latitude = null, int $Distance = null, array $ServiceTags = null, int $PageSize = null, array $OrderByRequests = null): ResponseInterface
+    public function GetOrgs(string $OrgName = null, string $CityId = null, float $Longitude = null, float $Latitude = null, int $Distance = null, array $ServiceTags = null, int $PageIndex = 1, int $PageSize = 15, array $OrderByRequests = null): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -418,13 +418,13 @@ class Client extends BasicClient
     /**
      * 查询酒店所有评论
      *
-     * @param float    $OrgId     酒店Id
-     * @param int      $PageIndex 页码
-     * @param int|null $PageSize  分页大小
+     * @param float $OrgId     酒店Id
+     * @param int   $PageIndex 页码
+     * @param int   $PageSize  分页大小
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function GetRoomRemarks(float $OrgId, int $PageIndex, int $PageSize = null): ResponseInterface
+    public function GetRoomRemarks(float $OrgId, int $PageIndex = 1, int $PageSize = 15): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -432,7 +432,7 @@ class Client extends BasicClient
                 'content' => [
                     'OrgId' => $OrgId,
                     'PageIndex' => $PageIndex,
-                    'PageSize' => $PageSize ?? 15,
+                    'PageSize' => $PageSize,
                 ],
             ],
         ]);
@@ -441,15 +441,15 @@ class Client extends BasicClient
     /**
      * 查询酒店状态变更记录
      *
-     * @param float    $OrgId     酒店Id
-     * @param string   $StartDate 开始日期
-     * @param string   $EndDate   结束日期
-     * @param int      $PageIndex 页码
-     * @param int|null $PageSize  分页大小
+     * @param float  $OrgId     酒店Id
+     * @param string $StartDate 开始日期
+     * @param string $EndDate   结束日期
+     * @param int    $PageIndex 页码
+     * @param int    $PageSize  分页大小
      * @return ResponseInterface
      * @throws GuzzleException
      */
-    public function GetHotelStatsChangedRecords(float $OrgId, string $StartDate, string $EndDate, int $PageIndex, int $PageSize = null): ResponseInterface
+    public function GetHotelStatsChangedRecords(float $OrgId, string $StartDate, string $EndDate, int $PageIndex = 1, int $PageSize = 15): ResponseInterface
     {
         return $this->http->client->post('', [
             'json' => [
@@ -459,7 +459,7 @@ class Client extends BasicClient
                     'StartDate' => $StartDate,
                     'EndDate' => $EndDate,
                     'PageIndex' => $PageIndex,
-                    'PageSize' => $PageSize ?? 15,
+                    'PageSize' => $PageSize,
                 ],
             ],
         ]);

@@ -35,30 +35,4 @@ return [
     |--------------------------------------------------------------------------
     */
     'app_key' => env('BEYONDH_APP_KEY', ''),
-
-    /*
-    |--------------------------------------------------------------------------
-    | 日志记录
-    |--------------------------------------------------------------------------
-    |
-    | 注意：该项不配置或配置空，将不会进行日志记录
-    |
-    */
-    'logger' => [
-        'handler' => [
-            'class' => Monolog\Handler\StreamHandler::class,
-            'constructor' => [
-                'stream' => BASE_PATH . '/runtime/logs/beyondh.log',
-                'level' => Monolog\Logger::DEBUG,
-            ],
-        ],
-        'formatter' => [
-            'class' => Monolog\Formatter\LineFormatter::class,
-            'constructor' => [
-                'format' => null,
-                'dateFormat' => 'Y-m-d H:i:s',
-                'allowInlineLineBreaks' => true,
-            ],
-        ],
-    ],
 ];

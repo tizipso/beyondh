@@ -15,6 +15,7 @@ use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Coroutine;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 class Client
 {
@@ -127,16 +128,16 @@ class Client
                 $promise = $handler($request, $options);
                 return $promise->then(
                     function (ResponseInterface $response) use ($request) {
-                        if ($this->app['config']->get('logger')) {
-                            $body = $response->getBody()->getContents();
-
+                        try {   //  配置日志之后，将打印
                             $logger = ApplicationContext::getContainer()->get(LoggerFactory::class)->get('log', 'beyondh');
+
+                            $body = $response->getBody()->getContents();
 
                             $logger->info(sprintf('%s %s', 'REQUEST', $request->getBody()->getContents()));
                             $logger->info(sprintf('%s %s', 'RESPONSE', $body));
 
                             return $response->withBody(new SwooleStream($body));
-                        } else {
+                        } catch (Throwable $exception) {
                             return $response;
                         }
                     }
